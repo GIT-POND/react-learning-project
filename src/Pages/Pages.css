@@ -1,0 +1,146 @@
+/*   #GLOBAL STYLING   */
+:root {
+  --yellow1: #fdf074;
+  --pink1: rgb(255, 86, 120);
+
+  --white-seethrough: rgba(248, 248, 248, 0.95);
+  --black-seethrough: rgba(1, 1, 1, 0.75);
+  --purple1: #999dd9;
+  --invisible: rgba(228, 221, 221, 0.1);
+}
+
+body {
+  min-width: 100%;
+  min-height: 100%;
+}
+
+.return-btn {
+  /*    return to landing page    */
+  color: black;
+  width: fit-content;
+}
+.return-btn:hover {
+  color: gray;
+}
+
+.container {
+  padding: 1em;
+  background-color: var(--white-seethrough);
+  box-shadow: 0 13px 21px rgba(0, 0, 0, 0.2);
+
+  height: fit-content;
+  width: max-content;
+
+  border-radius: 1em;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+.container-form {
+  /*    form related styling begin    */
+  margin: 1em 5em;
+
+  display: flex;
+  flex-direction: column;
+}
+.form-input {
+  margin-bottom: .5em;
+  height: 35px;
+
+  border-radius: 0.25em;
+  border-style: solid;
+  border-color: black;
+
+  background-color: var(--invisible);
+}
+.submit-sec {
+  margin-top: 1em;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.submit-button {
+  margin: 1em auto 0 auto;
+
+  height: 60px;
+  width: 100%;
+
+  border-style: none;
+  border-radius: 2em;
+
+  background-color: var(--pink1);
+}
+.submit-button:hover {
+  /*    form related styling end    */
+  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.25);
+}
+
+/*   #LANDING PAGE STYLING   */
+.landing-bg {
+  background-image: url("https://assets.website-files.com/5d5e2ff58f10c53dcffd8683/5d99f822a491dd10d43275ce_composition-15.svg");
+  background-size: 100%;
+  background-repeat: no-repeat;
+  background-color: var(--yellow1);
+  background-position: center;
+  display: flex;
+  justify-content: center;
+}
+.landing-col1 {
+  height: 100vh;
+  width: 50%;
+}
+.landing-col2 {
+  background-color: var(--white-seethrough);
+  box-shadow: 0 13px 21px rgba(0, 0, 0, 0.2);
+  width: 50%;
+
+  padding-left: 3em;
+  display: table;
+}
+.landing-contents {
+  display: table-cell;
+  vertical-align: middle;
+}
+.landing-cont-item {
+  margin-bottom: 1em;
+}
+.landing-btn {
+  background-color: var(--pink1);
+  padding: 0.5em 6em;
+  border-radius: 1em;
+  color: black;
+}
+a.landing-btn:hover {
+  text-decoration: none;
+  color: black;
+
+  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.25);
+}
+
+/*   #SIGNUP PAGE STYLING   */
+.signup-bg {
+  background-color: var(--yellow1);
+
+  height: 100vh;
+  width: 100%;
+
+  display: flex;
+  justify-content: center; /* horizontal center */
+  align-items: center; /* vertical center */
+}
+.redirect-signin{
+  margin: .5em auto 0 auto;
+  font-size: .85em;
+}
+
+/*    #LOGIN PAGE STYLING   */
+.login-bg {
+  background-color: var(--yellow1);
+
+  height: 100vh;
+  width: 100%;
+
+  display: flex;
+  justify-content: center; /* horizontal center */
+  align-items: center; /* vertical center */
+}
