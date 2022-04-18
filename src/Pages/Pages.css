@@ -133,6 +133,11 @@ a.landing-btn:hover {
   font-size: .85em;
 }
 
+/*    ~SUCCESS PAGE CONTAINER    */
+.success-container{
+  padding: 2em 4em;
+}
+
 /*    #LOGIN PAGE STYLING   */
 .login-bg {
   background-color: var(--yellow1);

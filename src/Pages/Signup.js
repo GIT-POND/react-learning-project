@@ -1,70 +1,132 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { Link } from "react-router-dom";
-import axios from '../API/api';
+import axios from '../API/axios';
 const REGISTER_URL = '/users/new_user';
 
 
 function Signup() {
   // ###### USE REFS ##### 
-  const userRef = useRef();
+  const inputRef = useRef();
   const errRef = useRef();
 
+
   // ###### USE STATES ##### 
-  const [user_, setUser] = useState(''); // tied to user input
-  const [userFocus, setUserFocus] = useState(false); // tied to focus on input field
+  const [user_, setUser] = useState('');                        // Username : string
+  const [email_, setEmail] = useState('');                      // Email    : string
+  const [password_, setPassword] = useState('');                // Password : string
+  const [pwFocus, setPWFocus] = useState('');                   // PWFocus  : boolean
 
-  const [email_, setEmail] = useState('');
-  const [emailFocus, setEmailFocus] = useState(false);
-
-  const [password_, setPassword] = useState('');
-  const [validPassword, setValidPassword] = useState(false); // to validate matching passwords
-  const [passwordFocus, setPasswordFocus] = useState(false);
-
-  const [match_, setMatch] = useState('');
-  const [matchFocus, setMatchFocus] = useState(false);
+  const [match_, setMatch] = useState('');                      // Confirm Password : string
+  const [validPassword, setValidPassword] = useState(false);    // Validate Password : boolean
 
   const [errMsg, setErrMsg] = useState('');
   const [success, setSuccess] = useState(false);
 
-  // ###### USE EFFECTS ##### 
 
+  // ###### USE EFFECTS ##### 
   useEffect(()=>{
-    // ~ NOT SURE
-    userRef.current.focus(); // set focus on username input
+    //   When the component renders, focus is put on the    
+    //   username input. This way, the user can start       
+    //   writing their login credentials without clicking   
+    //   on the e-mail input.                               
+
+    inputRef.current.focus();
   },[])
 
   useEffect(()=>{
-    console.log(`user:${user_}`);
-  },[user_])
+    //   changing password_ or match_ will trigger a check  
+
+    setValidPassword(match_ === password_) // passes in a boolean
+  },[password_, match_])
 
   useEffect(()=>{
-    console.log(`email:${email_}`)
-  },[email_])
+    //   changing any input field will reset the error message  
 
-  useEffect(()=>{
-    //   changing the password or match will trigger another check
-    console.log(`password:${password_}, match:${match_ === password_}`)
-    setValidPassword(match_ === password_) // ensures passwords match
-  },[password_, match_]) // every time values changes, useEffect is executed
-
-  useEffect(()=>{
-    //   changing any of the states will reset the error message
     setErrMsg('');
   },[user_, email_, password_, match_])
+
+
+  // ###### HANDLERS ###### 
+  const handleSubmit = async (e) =>{
+    //   {async} enables your program to start a potentially 
+    //   long-running task, and then rather than having to 
+    //   wait until that task has finished, to be able to 
+    //   continue to be responsive to other events while the 
+    //   task runs. Once the task is completed, your program 
+    //   is presented with the result.
+
+    e.preventDefault();
+
+    if (validPassword === false) {
+      setErrMsg("Passwords Dont Match!")
+      return;
+    }
+
+    try{
+      const response = await axios.post( REGISTER_URL, JSON.stringify({
+        user_name:  user_, 
+        email:      email_, 
+        password:   password_
+      }),{
+        headers:{
+          'Content-Type':'application/json',
+          'Access-Control-Allow-Origin':'*'
+        },
+        withCredentials: true
+      });
+
+      // console.log(response.data)
+      console.log(response.accessToken)
+      // console.log(JSON.stringify(response))
+      setSuccess(true);
+      //    user_name: carlos       
+      //    email: carlos@gmail.com 
+      //    password: 12345         
+      
+      setUser('');
+      setEmail('');
+      setPassword('');
+      setMatch('');
+    }catch (err) {
+        if(!err?.response){ // No connnection to API
+          setErrMsg('No Server Response')
+        } else if (err.response?.status === 409){ // Username taken
+          setErrMsg('Username Taken')
+        } else { // Any other error
+          setErrMsg('Registration Failed')
+        }
+
+        errRef.current.focus(); // Bring error into focus
+    }
+  }
 
 
 
   return (
     <>
+    {success? ( 
+      // ~~~~~~ SUCCESS DIV ~~~~~~ 
+      <div className='signup-bg'>
+        <div className='container' >
+            <section className='success-container'>
+              <h2>Success!</h2> 
+              <Link to={'/Login'}>Sign In</Link>
+            </section>
+        </div>
+      </div>
+
+     ):(
+
+    // ~~~~~~ SIGNUP DIV ~~~~~~ 
     <div className='signup-bg'>
       <div className='container'>
         <Link className='return-btn' to='/'>
           <i className='material-icons' style={{fontSize:"2em"}}>chevron_left</i>
         </Link>
 
-        <form className='container-form'>
+        <form className='container-form' onSubmit={handleSubmit}>
           <h3>Create your account</h3>
-          <p ref={errRef} className={errMsg? "errmsg":"none"}>{errMsg}</p>
+          <p ref={errRef} className={errMsg? "errmsg":"none"} style={{color:"red"}}>{errMsg}</p>
 
 
           <label htmlFor='user_'>Username</label>
@@ -72,25 +134,11 @@ function Signup() {
             type="text"
             id='user_'
             required
-            ref={userRef}
+            ref={inputRef}
             autoComplete='off'
             className='form-input' 
             onChange={(e)=> setUser(e.target.value)}
-            onFocus={()=>setUserFocus(true)}
-            onBlur={()=>setUserFocus(false)}
             />
-            {/* <p id='user_'
-            style={{display: userFocus? "" : "none", 
-            color:"white", 
-            backgroundColor:'rgba(1, 1, 1, 0.75)' , 
-            fontSize:".75em", 
-            borderRadius:"1em", 
-            padding:".25em 1em",
-            }}>
-              8 to 24 characters.<br/>
-              Must include uppercase letters<br/> 
-              lowercase letters, and numbers.
-            </p> */}
 
 
           <label htmlFor='email_'>Email</label>
@@ -98,16 +146,24 @@ function Signup() {
             type="email" 
             id='email_'
             required
-            ref={userRef}
             autoComplete='off'
             className='form-input' 
             onChange={(e)=>setEmail(e.target.value)} 
-            onFocus={()=>setEmailFocus(true)}
-            onBlur={()=>setEmailFocus(false)}
             />
 
 
           <label htmlFor='password_'>Password</label>
+          <p id='password_'
+            style={{display: pwFocus? "" : "none", 
+            backgroundColor:'rgba(1, 1, 1, 0.05)' , 
+            fontSize:".75em", 
+            borderRadius:".33em", 
+            padding:".25em 1em",
+            }}>
+              8 to 24 characters.<br/>
+              Must include uppercase letters, lowercase<br/>
+               letters, numbers and special characters.
+            </p>
           <input 
             type="password" 
             id='password_'
@@ -115,21 +171,9 @@ function Signup() {
             autoComplete='off'
             className='form-input'  
             onChange={(e)=>setPassword(e.target.value)} 
-            onFocus={()=>setPasswordFocus(true)}
-            onBlur={()=>setPasswordFocus(false)}
+            onFocus={()=>setPWFocus(true)}
+            onBlur={()=>setPWFocus(false)}
             />
-            {/* <p id='password_'
-            style={{display: passwordFocus? "" : "none", 
-            color:"white", 
-            backgroundColor:'rgba(1, 1, 1, 0.75)' , 
-            fontSize:".75em", 
-            borderRadius:"1em", 
-            padding:".25em 1em",
-            }}>
-              8 to 24 characters.<br/>
-              Must include uppercase and lowercase<br/>
-               letters, numbers and special characters.
-            </p> */}
 
 
             <label htmlFor='match_'>Confirm Password
@@ -145,17 +189,12 @@ function Signup() {
             autoComplete='off'
             className='form-input'  
             onChange={(e)=>setMatch(e.target.value)} 
-            onFocus={()=>setMatchFocus(true)}
-            onBlur={()=>setMatchFocus(false)}
             />
 
         
             <button 
             type="submit" 
             className='submit-button' 
-            // disabled={user_ && email_ && password_ && match_? false:true}
-            onFocus={()=>setMatchFocus(true)}
-            onBlur={()=>setMatchFocus(false)}
             >
               Create Account
             </button>
@@ -164,7 +203,9 @@ function Signup() {
 
       </div>
     </div>
+    )}
     </>
+    
   )
 }
 

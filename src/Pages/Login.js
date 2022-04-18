@@ -9,33 +9,30 @@ function Login() {
   const [password, setPassword] = useState('');
 
   /* Confirmation */
-  const [error, setError] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
+  const [errMsg, setErrMsg] = useState('');
+  const [success, setSuccess] = useState(false);
 
-  /* Handlers */
-  const handleEmail = (e) =>{
-    setEmail(e.target.value);
-    setSubmitted(false);
-  }
-  const handlePassword = (e) =>{
-    setPassword(e.target.value);
-    setSubmitted(false);
-  }
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if ( email === '' || password === '') {
-      setError(true);
-    } else {
-      setSubmitted(true);
-      setError(false);
+      setErrMsg('Missing Credentials');
+      return;
+    } 
+
+    try{
+      console.log(`Credentials =[ email:${email} password:${password}]`)
+
+    }catch (err){
+
     }
   }
 
   /* Submit Messages */
   const errorMessage = ()=>{
     return(
-      <div style={{display: error? "" : "none", color:"red", textAlign:"center",}}>
-        Please fill all fields!
+      <div style={{display: errMsg? "" : "none", color:"red", textAlign:"center",}}>
+        {errMsg}
       </div>
     )
   }
@@ -60,10 +57,10 @@ function Login() {
           {errorMessage()}
 
           <label>Email</label>
-          <input className='form-input' type="email"  onChange={handleEmail} value={email}/>
+          <input className='form-input' type="email"  onChange={(e)=>setEmail(e.target.value)} value={email}/>
 
           <label>Password</label>
-          <input className='form-input' type="password"  onChange={handlePassword} value={password}/>
+          <input className='form-input' type="password"  onChange={(e)=>setPassword(e.target.value)} value={password}/>
           {successMessage()}
 
           <section className='submit-sec'>
