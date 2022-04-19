@@ -83,10 +83,6 @@ function Signup() {
       //    email: carlos@gmail.com 
       //    password: 12345         
       
-      setUser('');
-      setEmail('');
-      setPassword('');
-      setMatch('');
     }catch (err) {
         if(!err?.response){ // No connnection to API
           setErrMsg('No Server Response')
@@ -98,6 +94,11 @@ function Signup() {
 
         errRef.current.focus(); // Bring error into focus
     }
+
+     setUser('');
+      setEmail('');
+      setPassword('');
+      setMatch('');
   }
 
 
